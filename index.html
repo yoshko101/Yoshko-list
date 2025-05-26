@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>רשימת קניות עם חיפוש</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      direction: rtl;
+      background: #fafafa;
+      padding: 20px;
+      margin: 0;
+    }
+    .cat {
+      border-radius: 6px;
+      padding: 8px;
+      margin-bottom: 14px;
+    }
+    .cat-header {
+      font-weight: bold;
+      padding: 6px;
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.12);
+      cursor: pointer;
+    }
+    .item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px;
+      margin-top: 4px;
+      background: #fff;
+      border-radius: 4px;
+    }
+    .hidden {
+      display: none;
+    }
+    input[type="number"] {
+      width: 60px;
+    }
+    button {
+      background: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 6px 10px;
+      font-size: 14px;
+      margin-inline-start: 6px;
+    }
+    textarea {
+      width: 100%;
+      height: 120px;
+      margin-top: 10px;
+    }
+    #search {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #bbb;
+      margin-bottom: 14px;
+    }
+  </style>
+</head>
+<body>
+<h2>רשימת קניות</h2>
+<input id="search" placeholder="חפש מוצר..." oninput="filterItems(this.value)" />
+
+<div style="display:flex;gap:6px;margin-bottom:10px">
+  <input id="newCat" placeholder="קטגוריה חדשה" style="flex:1" />
+  <button onclick="addCat()">הוסף קטגוריה</button>
+  <button onclick="resetAll()" style="background:#f44336">איפוס כללי</button>
+</div>
+
+<div id="cats">  <div class="cat" data-cat="פירות וירקות" style="background:#FFCDD2">
+    <div class="cat-header" onclick="toggleCat(this)">פירות וירקות</div>
+    <div class="item hidden"><input type="checkbox"><label>עגבניות</label><input type="number" min="0" value="0" data-name="עגבניות"></div>
+    <div class="item hidden"><input type="checkbox"><label>מלפפונים</label><input type="number" min="0" value="0" data-name="מלפפונים"></div>
+    <div class="item hidden"><input type="checkbox"><label>תפוחים</label><input type="number" min="0" value="0" data-name="תפוחים"></div>
+    <div class="item hidden"><input type="checkbox"><label>בננות</label><input type="number" min="0" value="0" data-name="בננות"></div>
+    <div class="item hidden"><input type="checkbox"><label>חסה</label><input type="number" min="0" value="0" data-name="חסה"></div>
+    <div class="item hidden"><input type="checkbox"><label>גזר</label><input type="number" min="0" value="0" data-name="גזר"></div>
+    <div class="item hidden"><input type="checkbox"><label>קישואים</label><input type="number" min="0" value="0" data-name="קישואים"></div>
+    <div class="item hidden"><input type="checkbox"><label>פלפל אדום</label><input type="number" min="0" value="0" data-name="פלפל אדום"></div>
+    <div class="item hidden"><input type="checkbox"><label>פלפל ירוק</label><input type="number" min="0" value="0" data-name="פלפל ירוק"></div>
+    <div class="item hidden"><input type="checkbox"><label>ברוקולי</label><input type="number" min="0" value="0" data-name="ברוקולי"></div>
+    <div class="item hidden"><input type="checkbox"><label>כרובית</label><input type="number" min="0" value="0" data-name="כרובית"></div>
+    <div class="item hidden"><input type="checkbox"><label>בצל לבן</label><input type="number" min="0" value="0" data-name="בצל לבן"></div>
+    <div class="item hidden"><input type="checkbox"><label>שום</label><input type="number" min="0" value="0" data-name="שום"></div>
+    <div class="item hidden"><input type="checkbox"><label>תפוחי אדמה</label><input type="number" min="0" value="0" data-name="תפוחי אדמה"></div>
+    <div class="item hidden"><input type="checkbox"><label>אבוקדו</label><input type="number" min="0" value="0" data-name="אבוקדו"></div>
+    <div class="item hidden"><input type="checkbox"><label>לימונים</label><input type="number" min="0" value="0" data-name="לימונים"></div>
+    <div class="add-line"><input type="text" placeholder="שם פריט" /><button onclick="addItem(this)">הוסף פריט</button></div>
+  </div>  <div class="cat" data-cat="מוצרי חלב" style="background:#C8E6C9">
+    <div class="cat-header" onclick="toggleCat(this)">מוצרי חלב</div>
+    <div class="item hidden"><input type="checkbox"><label>חלב</label><input type="number" min="0" value="0" data-name="חלב"></div>
+    <div class="item hidden"><input type="checkbox"><label>יוגורט</label><input type="number" min="0" value="0" data-name="יוגורט"></div>
+    <div class="item hidden"><input type="checkbox"><label>גבינה לבנה</label><input type="number" min="0" value="0" data-name="גבינה לבנה"></div>
+    <div class="item hidden"><input type="checkbox"><label>קוטג'</label><input type="number" min="0" value="0" data-name="קוטג'"></div>
+    <div class="item hidden"><input type="checkbox"><label>גבינה צהובה</label><input type="number" min="0" value="0" data-name="גבינה צהובה"></div>
+    <div class="item hidden"><input type="checkbox"><label>שמנת מתוקה</label><input type="number" min="0" value="0" data-name="שמנת מתוקה"></div>
+    <div class="item hidden"><input type="checkbox"><label>שמנת לבישול</label><input type="number" min="0" value="0" data-name="שמנת לבישול"></div>
+    <div class="item hidden"><input type="checkbox"><label>חמאה</label><input type="number" min="0" value="0" data-name="חמאה"></div>
+    <div class="item hidden"><input type="checkbox"><label>מרגרינה</label><input type="number" min="0" value="0" data-name="מרגרינה"></div>
+    <div class="item hidden"><input type="checkbox"><label>גבינת שמנת</label><input type="number" min="0" value="0" data-name="גבינת שמנת"></div>
+    <div class="item hidden"><input type="checkbox"><label>גבינה קשה</label><input type="number" min="0" value="0" data-name="גבינה קשה"></div>
+    <div class="item hidden"><input type="checkbox"><label>אשל</label><input type="number" min="0" value="0" data-name="אשל"></div>
+    <div class="item hidden"><input type="checkbox"><label>רוויון</label><input type="number" min="0" value="0" data-name="רוויון"></div>
+    <div class="item hidden"><input type="checkbox"><label>ביצים</label><input type="number" min="0" value="0" data-name="ביצים"></div>
+    <div class="add-line"><input type="text" placeholder="שם פריט" /><button onclick="addItem(this)">הוסף פריט</button></div>
+  </div>  <div class="cat" data-cat="בשר ודגים" style="background:#BBDEFB">
+    <div class="cat-header" onclick="toggleCat(this)">בשר ודגים</div>
+    <div class="item hidden"><input type="checkbox"><label>חזה עוף</label><input type="number" min="0" value="0" data-name="חזה עוף"></div>
+    <div class="item hidden"><input type="checkbox"><label>בשר טחון</label><input type="number" min="0" value="0" data-name="בשר טחון"></div>
+    <div class="item hidden"><input type="checkbox"><label>בשר לחמין</label><input type="number" min="0" value="0" data-name="בשר לחמין"></div>
+    <div class="item hidden"><input type="checkbox"><label>כרעיים</label><input type="number" min="0" value="0" data-name="כרעיים"></div>
+    <div class="item hidden"><input type="checkbox"><label>עוף שלם</label><input type="number" min="0" value="0" data-name="עוף שלם"></div>
+    <div class="item hidden"><input type="checkbox"><label>עוף טחון</label><input type="number" min="0" value="0" data-name="עוף טחון"></div>
+    <div class="item hidden"><input type="checkbox"><label>שוקיים</label><input type="number" min="0" value="0" data-name="שוקיים"></div>
+    <div class="item hidden"><input type="checkbox"><label>כנפיים</label><input type="number" min="0" value="0" data-name="כנפיים"></div>
+    <div class="item hidden"><input type="checkbox"><label>סלמון</label><input type="number" min="0" value="0" data-name="סלמון"></div>
+    <div class="item hidden"><input type="checkbox"><label>בקלה</label><input type="number" min="0" value="0" data-name="בקלה"></div>
+    <div class="item hidden"><input type="checkbox"><label>טונה טרייה</label><input type="number" min="0" value="0" data-name="טונה טרייה"></div>
+    <div class="item hidden"><input type="checkbox"><label>מושטים</label><input type="number" min="0" value="0" data-name="מושטים"></div>
+    <div class="item hidden"><input type="checkbox"><label>סטייק אנטריקוט</label><input type="number" min="0" value="0" data-name="סטייק אנטריקוט"></div>
+    <div class="item hidden"><input type="checkbox"><label>שווארמה הודו</label><input type="number" min="0" value="0" data-name="שווארמה הודו"></div>
+    <div class="item hidden"><input type="checkbox"><label>נקניקיות</label><input type="number" min="0" value="0" data-name="נקניקיות"></div>
+    <div class="add-line"><input type="text" placeholder="שם פריט" /><button onclick="addItem(this)">הוסף פריט</button></div>
+  </div>  <div class="cat" data-cat="קפואים" style="background:#FFE0B2">
+    <div class="cat-header" onclick="toggleCat(this)">קפואים</div>
+    <div class="item hidden"><input type="checkbox"><label>אפונה</label><input type="number" min="0" value="0" data-name="אפונה"></div>
+    <div class="item hidden"><input type="checkbox"><label>שעועית ירוקה</label><input type="number" min="0" value="0" data-name="שעועית ירוקה"></div>
+    <div class="item hidden"><input type="checkbox"><label>שעועית צהובה</label><input type="number" min="0" value="0" data-name="שעועית צהובה"></div>
+    <div class="item hidden"><input type="checkbox"><label>חומוס קפוא</label><input type="number" min="0" value="0" data-name="חומוס קפוא"></div>
+    <div class="item hidden"><input type="checkbox"><label>אפונה וגזר</label><input type="number" min="0" value="0" data-name="אפונה וגזר"></div>
+    <div class="item hidden"><input type="checkbox"><label>ברוקולי קפוא</label><input type="number" min="0" value="0" data-name="ברוקולי קפוא"></div>
+    <div class="item hidden"><input type="checkbox"><label>כרובית קפואה</label><input type="number" min="0" value="0" data-name="כרובית קפואה"></div>
+    <div class="item hidden"><input type="checkbox"><label>פתיתים קפואים</label><input type="number" min="0" value="0" data-name="פתיתים קפואים"></div>
+    <div class="item hidden"><input type="checkbox"><label>פיצה קפואה</label><input type="number" min="0" value="0" data-name="פיצה קפואה"></div>
+    <div class="item hidden"><input type="checkbox"><label>שניצל תירס קפוא</label><input type="number" min="0" value="0" data-name="שניצל תירס קפוא"></div>
+    <div class="item hidden"><input type="checkbox"><label>צ'יפס קפוא</label><input type="number" min="0" value="0" data-name="צ'יפס קפוא"></div>
+    <div class="item hidden"><input type="checkbox"><label>בצק עלים</label><input type="number" min="0" value="0" data-name="בצק עלים"></div>
+    <div class="item hidden"><input type="checkbox"><label>מיקס ירקות לקדירה</label><input type="number" min="0" value="0" data-name="מיקס ירקות לקדירה"></div>
+    <div class="item hidden"><input type="checkbox"><label>פסטה קפואה</label><input type="number" min="0" value="0" data-name="פסטה קפואה"></div>
+    <div class="add-line"><input type="text" placeholder="שם פריט" /><button onclick="addItem(this)">הוסף פריט</button></div>
+  </div>  <div class="cat" data-cat="מוצרי יסוד ויבשים" style="background:#D1C4E9">
+    <div class="cat-header" onclick="toggleCat(this)">מוצרי יסוד ויבשים</div>
+    <div class="item hidden"><input type="checkbox"><label>אורז</label><input type="number" min="0" value="0" data-name="אורז"></div>
+    <div class="item hidden"><input type="checkbox"><label>אורז בסמטי</label><input type="number" min="0" value="0" data-name="אורז בסמטי"></div>
+    <div class="item hidden"><input type="checkbox"><label>פסטה</label><input type="number" min="0" value="0" data-name="פסטה"></div>
+    <div class="item hidden"><input type="checkbox"><label>פתיתים</label><input type="number" min="0" value="0" data-name="פתיתים"></div>
+    <div class="item hidden"><input type="checkbox"><label>קוסקוס</label><input type="number" min="0" value="0" data-name="קוסקוס"></div>
+    <div class="item hidden"><input type="checkbox"><label>קינואה</label><input type="number" min="0" value="0" data-name="קינואה"></div>
+    <div class="item hidden"><input type="checkbox"><label>סוכר</label><input type="number" min="0" value="0" data-name="סוכר"></div>
+    <div class="item hidden"><input type="checkbox"><label>סוכר חום</label><input type="number" min="0" value="0" data-name="סוכר חום"></div>
+    <div class="item hidden"><input type="checkbox"><label>מלח</label><input type="number" min="0" value="0" data-name="מלח"></div>
+    <div class="item hidden"><input type="checkbox"><label>מלח גס</label><input type="number" min="0" value="0" data-name="מלח גס"></div>
+    <div class="item hidden"><input type="checkbox"><label>קמח לבן</label><input type="number" min="0" value="0" data-name="קמח לבן"></div>
+    <div class="item hidden"><input type="checkbox"><label>קמח מלא</label><input type="number" min="0" value="0" data-name="קמח מלא"></div>
+    <div class="item hidden"><input type="checkbox"><label>קמח תופח</label><input type="number" min="0" value="0" data-name="קמח תופח"></div>
+    <div class="item hidden"><input type="checkbox"><label>שיבולת שועל</label><input type="number" min="0" value="0" data-name="שיבולת שועל"></div>
+    <div class="item hidden"><input type="checkbox"><label>דגני בוקר</label><input type="number" min="0" value="0" data-name="דגני בוקר"></div>
+    <div class="item hidden"><input type="checkbox"><label>עדשים ירוקות</label><input type="number" min="0" value="0" data-name="עדשים ירוקות"></div>
+    <div class="item hidden"><input type="checkbox"><label>שעועית לבנה</label><input type="number" min="0" value="0" data-name="שעועית לבנה"></div>
+    <div class="item hidden"><input type="checkbox"><label>שעועית אדומה</label><input type="number" min="0" value="0" data-name="שעועית אדומה"></div>
+    <div class="item hidden"><input type="checkbox"><label>חומץ</label><input type="number" min="0" value="0" data-name="חומץ"></div>
+    <div class="item hidden"><input type="checkbox"><label>חרדל</label><input type="number" min="0" value="0" data-name="חרדל"></div>
+    <div class="item hidden"><input type="checkbox"><label>קטשופ</label><input type="number" min="0" value="0" data-name="קטשופ"></div>
+    <div class="item hidden"><input type="checkbox"><label>מיונז</label><input type="number" min="0" value="0" data-name="מיונז"></div>
+    <div class="item hidden"><input type="checkbox"><label>רוטב סויה</label><input type="number" min="0" value="0" data-name="רוטב סויה"></div>
+    <div class="item hidden"><input type="checkbox"><label>שמן זית</label><input type="number" min="0" value="0" data-name="שמן זית"></div>
+    <div class="item hidden"><input type="checkbox"><label>שמן קנולה</label><input type="number" min="0" value="0" data-name="שמן קנולה"></div>
+    <div class="add-line"><input type="text" placeholder="שם פריט" /><button onclick="addItem(this)">הוסף פריט</button></div>
+  </div>  <div class="cat" data-cat="חומרי אפייה ועוגות" style="background:#B2EBF2">
+    <div class="cat-header" onclick="toggleCat(this)">חומרי אפייה ועוגות</div>
+    <div class="item hidden"><input type="checkbox"><label>אבקת אפייה</label><input type="number" min="0" value="0" data-name="אבקת אפייה"></div>
+    <div class="item hidden"><input type="checkbox"><label>קורנפלור</label><input type="number" min="0" value="0" data-name="קורנפלור"></div>
+    <div class="item hidden"><input type="checkbox"><label>קוקוס</label><input type="number" min="0" value="0" data-name="קוקוס"></div>
+    <div class="item hidden"><input type="checkbox"><label>סוכריות צבעוניות</label><input type="number" min="0" value="0" data-name="סוכריות צבעוניות"></div>
+    <div class="item hidden"><input type="checkbox"><label>שוקולד צ'יפס</label><input type="number" min="0" value="0" data-name="שוקולד צ'יפס"></div>
+    <div class="item hidden"><input type="checkbox"><label>שמרים יבשים</label><input type="number" min="0" value="0" data-name="שמרים יבשים"></div>
+    <div class="item hidden"><input type="checkbox"><label>שמרים טריים</label><input type="number" min="0" value="0" data-name="שמרים טריים"></div>
+    <div class="item hidden"><input type="checkbox"><label>תמצית וניל</label><input type="number" min="0" value="0" data-name="תמצית וניל"></div>
+    <div class="item hidden"><input type="checkbox"><label>קקאו</label><input type="number" min="0" value="0" data-name="קקאו"></div>
+    <div class="item hidden"><input type="checkbox"><label>אבקת סוכר</label><input type="number" min="0" value="0" data-name="אבקת סוכר"></div>
+    <div class="item hidden"><input type="checkbox"><label>חמאת בוטנים</label><input type="number" min="0" value="0" data-name="חמאת בוטנים"></div>
+    <div class="item hidden"><input type="checkbox"><label>ריבת חלב</label><input type="number" min="0" value="0" data-name="ריבת חלב"></div>
+    <div class="item hidden"><input type="checkbox"><label>סילאן</label><input type="number" min="0" value="0" data-name="סילאן"></div>
+    <div class="item hidden"><input type="checkbox"><label>דבש</label><input type="number" min="0" value="0" data-name="דבש"></div>
+    <div class="item hidden"><input type="checkbox"><label>שוקולד מריר</label><input type="number" min="0" value="0" data-name="שוקולד מריר"></div>
+    <div class="item hidden"><input type="checkbox"><label>שוקולד חלב</label><input type="number" min="0" value="0" data-name="שוקולד חלב"></div>
+    <div class="item hidden"><input type="checkbox"><label>עטריות שוקולד</label><input type="number" min="0" value="0" data-name="עטריות שוקולד"></div>
+    <div class="item hidden"><input type="checkbox"><label>תמצית שקדים</label><input type="number" min="0" value="0" data-name="תמצית שקדים"></div>
+    <div class="item hidden"><input type="checkbox"><label>בצק סוכר</label><input type="number" min="0" value="0" data-name="בצק סוכר"></div>
+    <div class="item hidden"><input type="checkbox"><label>אגוזי מלך</label><input type="number" min="0" value="0" data-name="אגוזי מלך"></div>
+    <div class="add-line"><input type="text" placeholder="שם פריט" /><button onclick="addItem(this)">הוסף פריט</button></div>
+  </div>  <div class="cat" data-cat="חומרי ניקוי" style="background:#DCEDC8">
+    <div class="cat-header" onclick="toggleCat(this)">חומרי ניקוי</div>
+    <div class="item hidden"><input type="checkbox"><label>סבון כלים</label><input type="number" min="0" value="0" data-name="סבון כלים"></div>
+    <div class="item hidden"><input type="checkbox"><label>נוזל לרצפות</label><input type="number" min="0" value="0" data-name="נוזל לרצפות"></div>
+    <div class="item hidden"><input type="checkbox"><label>אקונומיקה</label><input type="number" min="0" value="0" data-name="אקונומיקה"></div>
+    <div class="item hidden"><input type="checkbox"><label>מסיר שומנים</label><input type="number" min="0" value="0" data-name="מסיר שומנים"></div>
+    <div class="item hidden"><input type="checkbox"><label>תרסיס חלונות</label><input type="number" min="0" value="0" data-name="תרסיס חלונות"></div>
+    <div class="item hidden"><input type="checkbox"><label>תרסיס אמבטיה</label><input type="number" min="0" value="0" data-name="תרסיס אמבטיה"></div>
+    <div class="item hidden"><input type="checkbox"><label>אבקת כביסה</label><input type="number" min="0" value="0" data-name="אבקת כביסה"></div>
+    <div class="item hidden"><input type="checkbox"><label>מרכך כביסה</label><input type="number" min="0" value="0" data-name="מרכך כביסה"></div>
+    <div class="item hidden"><input type="checkbox"><label>טבליות למדיח</label><input type="number" min="0" value="0" data-name="טבליות למדיח"></div>
+    <div class="item hidden"><input type="checkbox"><label>מלח למדיח</label><input type="number" min="0" value="0" data-name="מלח למדיח"></div>
+    <div class="item hidden"><input type="checkbox"><label>מטהרי אוויר</label><input type="number" min="0" value="0" data-name="מטהרי אוויר"></div>
+    <div class="item hidden"><input type="checkbox"><label>ספוגים</label><input type="number" min="0" value="0" data-name="ספוגים"></div>
+    <div class="item hidden"><input type="checkbox"><label>כריות פלדה</label><input type="number" min="0" value="0" data-name="כריות פלדה"></div>
+    <div class="item hidden"><input type="checkbox"><label>מטליות רצפה</label><input type="number" min="0" value="0" data-name="מטליות רצפה"></div>
+    <div class="item hidden"><input type="checkbox"><label>כפפות ניקוי</label><input type="number" min="0" value="0" data-name="כפפות ניקוי"></div>
+    <div class="item hidden"><input type="checkbox"><label>שקיות אשפה</label><input type="number" min="0" value="0" data-name="שקיות אשפה"></div>
+    <div class="item hidden"><input type="checkbox"><label>מברשת אסלה</label><input type="number" min="0" value="0" data-name="מברשת אסלה"></div>
+    <div class="item hidden"><input type="checkbox"><label>נוזל ניקוי שירותים</label><input type="number" min="0" value="0" data-name="נוזל ניקוי שירותים"></div>
+    <div class="item hidden"><input type="checkbox"><label>חומר ניקוי תנורים</label><input type="number" min="0" value="0" data-name="חומר ניקוי תנורים"></div>
+    <div class="item hidden"><input type="checkbox"><label>נייר סופג</label><input type="number" min="0" value="0" data-name="נייר סופג"></div>
+    <div class="add-line"><input type="text" placeholder="שם פריט" /><button onclick="addItem(this)">הוסף פריט</button></div>
+  </div>  <div class="cat" data-cat="טיפוח והיגיינה" style="background:#FFECB3">
+    <div class="cat-header" onclick="toggleCat(this)">טיפוח והיגיינה</div>
+    <div class="item hidden"><input type="checkbox"><label>שמפו</label><input type="number" min="0" value="0" data-name="שמפו"></div>
+    <div class="item hidden"><input type="checkbox"><label>מרכך</label><input type="number" min="0" value="0" data-name="מרכך"></div>
+    <div class="item hidden"><input type="checkbox"><label>סבון גוף</label><input type="number" min="0" value="0" data-name="סבון גוף"></div>
+    <div class="item hidden"><input type="checkbox"><label>סבון ידיים</label><input type="number" min="0" value="0" data-name="סבון ידיים"></div>
+    <div class="item hidden"><input type="checkbox"><label>ג'ל רחצה</label><input type="number" min="0" value="0" data-name="ג'ל רחצה"></div>
+    <div class="item hidden"><input type="checkbox"><label>קרם לחות</label><input type="number" min="0" value="0" data-name="קרם לחות"></div>
+    <div class="item hidden"><input type="checkbox"><label>קרם הגנה</label><input type="number" min="0" value="0" data-name="קרם הגנה"></div>
+    <div class="item hidden"><input type="checkbox"><label>דאודורנט</label><input type="number" min="0" value="0" data-name="דאודורנט"></div>
+    <div class="item hidden"><input type="checkbox"><label>מברשת שיניים</label><input type="number" min="0" value="0" data-name="מברשת שיניים"></div>
+    <div class="item hidden"><input type="checkbox"><label>משחת שיניים</label><input type="number" min="0" value="0" data-name="משחת שיניים"></div>
+    <div class="item hidden"><input type="checkbox"><label>חוט דנטלי</label><input type="number" min="0" value="0" data-name="חוט דנטלי"></div>
+    <div class="item hidden"><input type="checkbox"><label>מי פה</label><input type="number" min="0" value="0" data-name="מי פה"></div>
+    <div class="item hidden"><input type="checkbox"><label>מגבוני פנים</label><input type="number" min="0" value="0" data-name="מגבוני פנים"></div>
+    <div class="item hidden"><input type="checkbox"><label>תחבושות היגייניות</label><input type="number" min="0" value="0" data-name="תחבושות היגייניות"></div>
+    <div class="item hidden"><input type="checkbox"><label>טמפונים</label><input type="number" min="0" value="0" data-name="טמפונים"></div>
+    <div class="item hidden"><input type="checkbox"><label>סכיני גילוח</label><input type="number" min="0" value="0" data-name="סכיני גילוח"></div>
+    <div class="item hidden"><input type="checkbox"><label>ג'ל גילוח</label><input type="number" min="0" value="0" data-name="ג'ל גילוח"></div>
+    <div class="item hidden"><input type="checkbox"><label>קרם פנים</label><input type="number" min="0" value="0" data-name="קרם פנים"></div>
+    <div class="item hidden"><input type="checkbox"><label>קרם ידיים</label><input type="number" min="0" value="0" data-name="קרם ידיים"></div>
+    <div class="item hidden"><input type="checkbox"><label>מסכת פנים</label><input type="number" min="0" value="0" data-name="מסכת פנים"></div>
+    <div class="item hidden"><input type="checkbox"><label>בשמים</label><input type="number" min="0" value="0" data-name="בשמים"></div>
+    <div class="add-line"><input type="text" placeholder="שם פריט" /><button onclick="addItem(this)">הוסף פריט</button></div>
+  </div>  <div class="cat" data-cat="מוצרי תינוקות" style="background:#CFD8DC">
+    <div class="cat-header" onclick="toggleCat(this)">מוצרי תינוקות</div>
+    <div class="item hidden"><input type="checkbox"><label>חיתולים</label><input type="number" min="0" value="0" data-name="חיתולים"></div>
+    <div class="item hidden"><input type="checkbox"><label>מגבונים לחים</label><input type="number" min="0" value="0" data-name="מגבונים לחים"></div>
+    <div class="item hidden"><input type="checkbox"><label>משחת החתלה</label><input type="number" min="0" value="0" data-name="משחת החתלה"></div>
+    <div class="item hidden"><input type="checkbox"><label>בקבוקים</label><input type="number" min="0" value="0" data-name="בקבוקים"></div>
+    <div class="item hidden"><input type="checkbox"><label>תחליף חלב</label><input type="number" min="0" value="0" data-name="תחליף חלב"></div>
+    <div class="item hidden"><input type="checkbox"><label>מוצצים</label><input type="number" min="0" value="0" data-name="מוצצים"></div>
+    <div class="item hidden"><input type="checkbox"><label>מטרנה</label><input type="number" min="0" value="0" data-name="מטרנה"></div>
+    <div class="item hidden"><input type="checkbox"><label>מזון תינוקות</label><input type="number" min="0" value="0" data-name="מזון תינוקות"></div>
+    <div class="item hidden"><input type="checkbox"><label>קעריות לילדים</label><input type="number" min="0" value="0" data-name="קעריות לילדים"></div>
+    <div class="add-line"><input type="text" placeholder="שם פריט" /><button onclick="addItem(this)">הוסף פריט</button></div>
+  </div>  <div class="cat" data-cat="נייר וחד פעמי" style="background:#F8BBD0">
+    <div class="cat-header" onclick="toggleCat(this)">נייר וחד פעמי</div>
+    <div class="item hidden"><input type="checkbox"><label>נייר טואלט</label><input type="number" min="0" value="0" data-name="נייר טואלט"></div>
+    <div class="item hidden"><input type="checkbox"><label>טישו</label><input type="number" min="0" value="0" data-name="טישו"></div>
+    <div class="item hidden"><input type="checkbox"><label>מגבות נייר</label><input type="number" min="0" value="0" data-name="מגבות נייר"></div>
+    <div class="item hidden"><input type="checkbox"><label>נייר אפייה</label><input type="number" min="0" value="0" data-name="נייר אפייה"></div>
+    <div class="item hidden"><input type="checkbox"><label>נייר כסף</label><input type="number" min="0" value="0" data-name="נייר כסף"></div>
+    <div class="item hidden"><input type="checkbox"><label>ניילון נצמד</label><input type="number" min="0" value="0" data-name="ניילון נצמד"></div>
+    <div class="item hidden"><input type="checkbox"><label>כוסות חד פעמיות</label><input type="number" min="0" value="0" data-name="כוסות חד פעמיות"></div>
+    <div class="item hidden"><input type="checkbox"><label>צלחות חד פעמיות</label><input type="number" min="0" value="0" data-name="צלחות חד פעמיות"></div>
+    <div class="item hidden"><input type="checkbox"><label>סכו"ם חד פעמי</label><input type="number" min="0" value="0" data-name="סכו&quot;ם חד פעמי"></div>
+    <div class="item hidden"><input type="checkbox"><label>קשיות</label><input type="number" min="0" value="0" data-name="קשיות"></div>
+    <div class="add-line"><input type="text" placeholder="שם פריט" /><button onclick="addItem(this)">הוסף פריט</button></div>
+  </div>  <div class="cat" data-cat="משקאות" style="background:#B3E5FC">
+    <div class="cat-header" onclick="toggleCat(this)">משקאות</div>
+    <div class="item hidden"><input type="checkbox"><label>מים מינרליים</label><input type="number" min="0" value="0" data-name="מים מינרליים"></div>
+    <div class="item hidden"><input type="checkbox"><label>סודה</label><input type="number" min="0" value="0" data-name="סודה"></div>
+    <div class="item hidden"><input type="checkbox"><label>מיץ תפוזים</label><input type="number" min="0" value="0" data-name="מיץ תפוזים"></div>
+    <div class="item hidden"><input type="checkbox"><label>מיץ תפוחים</label><input type="number" min="0" value="0" data-name="מיץ תפוחים"></div>
+    <div class="item hidden"><input type="checkbox"><label>קולה</label><input type="number" min="0" value="0" data-name="קולה"></div>
+    <div class="item hidden"><input type="checkbox"><label>ספרייט</label><input type="number" min="0" value="0" data-name="ספרייט"></div>
+    <div class="item hidden"><input type="checkbox"><label>שוקו</label><input type="number" min="0" value="0" data-name="שוקו"></div>
+    <div class="item hidden"><input type="checkbox"><label>יין אדום</label><input type="number" min="0" value="0" data-name="יין אדום"></div>
+    <div class="item hidden"><input type="checkbox"><label>יין לבן</label><input type="number" min="0" value="0" data-name="יין לבן"></div>
+    <div class="item hidden"><input type="checkbox"><label>בירה</label><input type="number" min="0" value="0" data-name="בירה"></div>
+    <div class="item hidden"><input type="checkbox"><label>משקה אנרגיה</label><input type="number" min="0" value="0" data-name="משקה אנרגיה"></div>
+    <div class="item hidden"><input type="checkbox"><label>תה קר</label><input type="number" min="0" value="0" data-name="תה קר"></div>
+    <div class="add-line"><input type="text" placeholder="שם פריט" /><button onclick="addItem(this)">הוסף פריט</button></div>
+  </div></div>
+
+<button onclick="exportJSON()">ייצא JSON</button>
+<button onclick="copyJSON()">העתק</button>
+<button onclick="importJSON()">ייבא JSON</button>
+<textarea id="box"></textarea>
+
+<script>
+const colors = ["#FFCDD2","#C8E6C9","#BBDEFB","#FFE0B2","#D1C4E9","#B2EBF2","#F8BBD0","#DCEDC8","#FFECB3","#CFD8DC"];
+
+function toggleCat(el) {
+  el.parentElement.querySelectorAll('.item').forEach(i => i.classList.toggle('hidden'));
+}
+
+function addItem(btn) {
+  const inp = btn.previousElementSibling;
+  const name = inp.value.trim();
+  if (!name) return;
+  const div = document.createElement('div');
+  div.className = 'item';
+  div.innerHTML = `<input type="checkbox"><label>${name}</label><input type="number" min="0" value="0" data-name="${name}">`;
+  btn.parentElement.before(div);
+  inp.value = '';
+  saveState();
+}
+
+function addCat() {
+  const name = document.getElementById('newCat').value.trim();
+  if (!name) return;
+  const idx = document.querySelectorAll('.cat').length;
+  const color = colors[idx % colors.length];
+  const cat = document.createElement('div');
+  cat.className = 'cat';
+  cat.setAttribute('data-cat', name);
+  cat.style.background = color;
+  cat.innerHTML = `<div class="cat-header" onclick="toggleCat(this)">${name}</div>
+    <div class="add-line"><input type="text" placeholder="שם פריט" /><button onclick="addItem(this)">הוסף פריט</button></div>`;
+  document.getElementById('cats').appendChild(cat);
+  document.getElementById('newCat').value = '';
+  saveState();
+}
+
+function saveState() {
+  const arr = [];
+  document.querySelectorAll('.cat').forEach(cat => {
+    const catName = cat.getAttribute('data-cat');
+    cat.querySelectorAll('.item').forEach(it => {
+      const qty = it.querySelector('input[type=number]');
+      const cb = it.querySelector('input[type=checkbox]');
+      const name = qty.getAttribute('data-name');
+      const val = parseInt(qty.value) || 0;
+      arr.push({ category: catName, name: name, quantity: val, checked: cb.checked });
+    });
+  });
+  localStorage.setItem("shopData", JSON.stringify(arr));
+}
+
+function loadState() {
+  const data = JSON.parse(localStorage.getItem("shopData") || "[]");
+  data.forEach(e => {
+    let cat = document.querySelector(`.cat[data-cat="${e.category}"]`);
+    if (!cat) { addCatByName(e.category); cat = document.querySelector(`.cat[data-cat="${e.category}"]`); }
+    let item = [...cat.querySelectorAll('.item')].find(i => i.querySelector('input[type=number]').getAttribute('data-name') === e.name);
+    if (!item) {
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.innerHTML = `<input type="checkbox"><label>${e.name}</label><input type="number" min="0" value="0" data-name="${e.name}">`;
+      cat.insertBefore(div, cat.querySelector('.add-line'));
+      item = div;
+    }
+    const q = item.querySelector('input[type=number]');
+    const cb = item.querySelector('input[type=checkbox]');
+    q.value = e.quantity;
+    cb.checked = e.checked;
+  });
+}
+
+function addCatByName(name) {
+  const idx = document.querySelectorAll('.cat').length;
+  const color = colors[idx % colors.length];
+  const cat = document.createElement('div');
+  cat.className = 'cat';
+  cat.setAttribute('data-cat', name);
+  cat.style.background = color;
+  cat.innerHTML = `<div class="cat-header" onclick="toggleCat(this)">${name}</div>
+    <div class="add-line"><input type="text" placeholder="שם פריט" /><button onclick="addItem(this)">הוסף פריט</button></div>`;
+  document.getElementById('cats').appendChild(cat);
+}
+
+function resetAll() {
+  localStorage.removeItem("shopData");
+  location.reload();
+}
+
+function exportJSON() {
+  const arr = [];
+  document.querySelectorAll('.cat').forEach(cat => {
+    const catName = cat.getAttribute('data-cat');
+    cat.querySelectorAll('.item').forEach(it => {
+      const qty = it.querySelector('input[type=number]');
+      const cb = it.querySelector('input[type=checkbox]');
+      const name = qty.getAttribute('data-name');
+      const val = parseInt(qty.value) || 0;
+      if (val > 0 || cb.checked) {
+        arr.push({ category: catName, name: name, quantity: val, checked: cb.checked });
+      }
+    });
+  });
+  document.getElementById('box').value = JSON.stringify(arr, null, 2);
+}
+
+function copyJSON() {
+  navigator.clipboard.writeText(document.getElementById('box').value || '');
+}
+
+function importJSON() {
+  try {
+    const data = JSON.parse(document.getElementById('box').value);
+    localStorage.setItem("shopData", JSON.stringify(data));
+    location.reload();
+  } catch {
+    alert("JSON שגוי");
+  }
+}
+
+function filterItems(val) {
+  const term = val.trim().toLowerCase();
+  document.querySelectorAll('.item').forEach(it => {
+    const txt = it.querySelector('label').textContent.toLowerCase();
+    if (term && !txt.includes(term)) it.classList.add('hidden');
+    else if (!term) it.classList.remove('hidden');
+  });
+}
+
+window.addEventListener("beforeunload", saveState);
+window.onload = loadState;
+</script>
+</body>
+</html>
