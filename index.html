@@ -339,25 +339,31 @@ function saveState() {
 }
 
 function loadState() {
+  const catsDiv = document.getElementById('cats');
   const data = JSON.parse(localStorage.getItem("shopData") || "[]");
+
+  if (!data.length) return; // אם אין נתונים — לא טוען כלום
+
+  const byCat = {};
   data.forEach(e => {
-    let cat = document.querySelector(`.cat[data-cat="${e.category}"]`);
-    if (!cat) { addCatByName(e.category); cat = document.querySelector(`.cat[data-cat="${e.category}"]`); }
-    let item = [...cat.querySelectorAll('.item')].find(i => i.querySelector('input[type=number]').getAttribute('data-name') === e.name);
-    if (!item) {
-      const div = document.createElement('div');
-      div.className = 'item';
-      div.innerHTML = `<input type="checkbox"><label>${e.name}</label><input type="number" min="0" value="0" data-name="${e.name}">`;
-      cat.insertBefore(div, cat.querySelector('.add-line'));
-      item = div;
-    }
-    const q = item.querySelector('input[type=number]');
-    const cb = item.querySelector('input[type=checkbox]');
-    q.value = e.quantity;
-    cb.checked = e.checked;
+    if (!byCat[e.category]) byCat[e.category] = [];
+    byCat[e.category].push(e);
+  });
+
+  Object.entries(byCat).forEach(([cat, items], idx) => {
+    const color = colors[idx % colors.length];
+    const div = document.createElement('div');
+    div.className = 'cat';
+    div.setAttribute('data-cat', cat);
+    div.style.background = color;
+    div.innerHTML = `<div class="cat-header" onclick="toggleCat(this)">${cat}</div>`;
+    items.forEach(e => {
+      div.innerHTML += `<div class="item"><input type="checkbox" ${e.checked ? "checked" : ""}><label>${e.name}</label><input type="number" value="${e.quantity || 0}" min="0" data-name="${e.name}"></div>`;
+    });
+    div.innerHTML += `<div class="add-line"><input type="text" placeholder="שם פריט" /><button onclick="addItem(this)">הוסף פריט</button></div>`;
+    catsDiv.appendChild(div);
   });
 }
-
 function addCatByName(name) {
   const idx = document.querySelectorAll('.cat').length;
   const color = colors[idx % colors.length];
