@@ -69,6 +69,7 @@
 <div style="display:flex;gap:6px;margin-bottom:10px">
   <input id="newCat" placeholder="קטגוריה חדשה" style="flex:1" />
   <button onclick="addCat()">הוסף קטגוריה</button>
+<button onclick="shareLink()">צור קישור לשיתוף</button>
   <button onclick="resetAll()" style="background:#f44336">איפוס כללי</button>
 </div>
 
@@ -401,7 +402,45 @@ function exportJSON() {
 function copyJSON() {
   navigator.clipboard.writeText(document.getElementById('box').value || '');
 }
+<script>
+  // ... כל הפונקציות הקיימות שלך כאן
 
+  function shareLink() {
+    const data = [];
+    document.querySelectorAll('.cat').forEach(cat => {
+      const catName = cat.getAttribute('data-cat');
+      cat.querySelectorAll('.item').forEach(it => {
+        const name = it.querySelector('input[type=number]').getAttribute('data-name');
+        const quantity = parseInt(it.querySelector('input[type=number]').value) || 0;
+        const checked = it.querySelector('input[type=checkbox]').checked;
+        if (name) data.push({ category: catName, name, quantity, checked });
+      });
+    });
+
+    const base = window.location.origin + window.location.pathname;
+    const encoded = encodeURIComponent(JSON.stringify(data));
+    const fullURL = `${base}?data=${encoded}`;
+
+    navigator.clipboard.writeText(fullURL).then(() => {
+      alert("קישור הועתק ללוח! אפשר לשלוח אותו עכשיו בוואטסאפ.");
+    });
+  }
+
+  // טעינה אוטומטית מהקישור
+  window.onload = () => {
+    const url = new URL(window.location.href);
+    const param = url.searchParams.get("data");
+    if (param) {
+      try {
+        const data = JSON.parse(decodeURIComponent(param));
+        localStorage.setItem("shopData", JSON.stringify(data));
+      } catch {
+        alert("שגיאה בטעינת הקישור");
+      }
+    }
+    loadState();
+  };
+</script>
 function importJSON() {
   try {
     const raw = JSON.parse(document.getElementById('box').value);
