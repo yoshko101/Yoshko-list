@@ -398,8 +398,11 @@ function copyJSON() {
 
 function importJSON() {
   try {
-    const data = JSON.parse(document.getElementById('box').value);
-    localStorage.setItem("shopData", JSON.stringify(data));
+    const raw = JSON.parse(document.getElementById('box').value);
+    const filtered = raw.filter(item =>
+      (parseInt(item.quantity) > 0 || item.checked)
+    );
+    localStorage.setItem("shopData", JSON.stringify(filtered));
     location.reload();
   } catch {
     alert("JSON שגוי");
